@@ -49,3 +49,4 @@ jobs:
           git add tmp_word_report/*.docx tmp_word_report/figure1.png
           git diff --cached --quiet || git commit -m 'Generate revised Word report [skip ci]'
           git push
+# synchronize pull request build
