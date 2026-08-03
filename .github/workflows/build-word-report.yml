@@ -7,6 +7,13 @@ on:
     paths:
       - 'tmp_word_report/generate_report.py'
       - '.github/workflows/build-word-report.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'tmp_word_report/generate_report.py'
+      - '.github/workflows/build-word-report.yml'
+      - 'tmp_word_report/*.docx'
 
 permissions:
   contents: write
@@ -29,11 +36,16 @@ jobs:
           sudo apt-get install -y fonts-noto-cjk
       - name: Generate document
         run: python tmp_word_report/generate_report.py
+      - name: Upload Word artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: revised-word-report
+          path: tmp_word_report/合肥工业大学会计学专业培养方案对标调研分析报告_语言修订版.docx
       - name: Commit generated document
+        if: github.event_name == 'push'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add tmp_word_report/*.docx tmp_word_report/figure1.png
           git diff --cached --quiet || git commit -m 'Generate revised Word report [skip ci]'
           git push
-# trigger build
